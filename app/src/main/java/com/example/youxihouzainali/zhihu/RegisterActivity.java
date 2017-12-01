@@ -73,17 +73,42 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
                 }
+                int flag = 0;
+                for (int i = 0; i < length; i++) {
+                    if (! (c[i] >= 48 && c[i] <= 57))
+                        flag = 1;
+                }
+                if(flag == 0) {
+                    alert("警告", "密码由纯数字构成，出于安全性考虑，请换用更复杂的密码");
+                    return;
+                }
+                if(password.equals("abcdef") || password.equals("abcabc") || password.equals("abc123") ||
+                        password.equals("a1b2c3") || password.equals("aaa111") || password.equals("123qwe") ||
+                        password.equals("qwerry") || password.equals("qweasd") || password.equals("admin") ||
+                        password.equals("Admin") || password.equals("administrator")) {
+                    alert("警告", "您输入的密码属于弱口令，出于安全性考虑，请换用更复杂的密码");
+                    return;
+                }
+                if(password.length() <= 6) {
+                    alert("警告", "为了您的安全考虑，密码长度不能少于6位");
+                    return;
+                }
+                if(telephone.length() != 11 && telephone.length() != 8) {
+                    alert("提示", "手机号格式错误，请检查");
+                    return;
+                }
                 if (password.length() > 18) {
                     alert("提示", "密码长度不能超过18位");
                     return;
                 }
+
                 if (!(password.equals(repassword))) {
                     alert("提示", "两次输入的密码不一致");
                     return;
                 }
                 if (password.equals(repassword)) {
                     int id = -1;
-                    if (username.length() == 0 || password.length() == 0) {
+                    if (username.length() == 0 || password.length() == 0 || telephone.length() == 0) {
                         alert("提示", "您的信息未填写完整");
                         return;
                     }

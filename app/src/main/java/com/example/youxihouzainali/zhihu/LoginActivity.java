@@ -4,17 +4,23 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.text.TextWatcher;
 
 public class LoginActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
+    private EditText mEditTextName;
+    private EditText mEditTextPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         if(actionbar != null)
             actionbar.hide();
-        //用户名和密码都输入过才enabled
+        mEditTextName = (EditText) findViewById(R.id.edit_text1);
+        mEditTextPassword = (EditText) findViewById(R.id.edit_text2);
         ImageButton button_eye = (ImageButton) findViewById(R.id.button_eye);
         button_eye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +64,14 @@ public class LoginActivity extends AppCompatActivity {
                 String username = null, password = null, rightPassword = null;
                 username = editText1.getText().toString();
                 password = editText2.getText().toString();
+                if(username.equals(null)) {
+                    Toast.makeText(LoginActivity.this, "您还没有输入用户名！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(password.equals(null)) {
+                    Toast.makeText(LoginActivity.this, "您还没有输入密码！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Cursor cursor = db.query("User", null, "username=?", new String[] {username}, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
