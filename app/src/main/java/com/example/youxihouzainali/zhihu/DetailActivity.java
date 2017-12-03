@@ -7,13 +7,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +37,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     StringBuilder s = new StringBuilder();
     String timestamp;
     String name;
     String url1;
+    private String u = null;
     private List<Detail> detailList = new ArrayList<>();
     private SwipeRefreshLayout swipeRefresh;
     DetailAdapter adapter = new DetailAdapter(detailList);
@@ -45,11 +53,12 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what ==1) {
-                /*TextView time_stamp = (TextView) findViewById(R.id.tv_timestamp);
+                TextView time_stamp = (TextView) findViewById(R.id.tv_timestamp);
                 TextView time_name = (TextView) findViewById(R.id.tv_name);
-                time_stamp.setText(timestamp);
-                time_name.setText(name);
-                */
+                String temp = "时间戳：" + timestamp;
+                time_stamp.setText(temp);
+                temp = "专栏名：" + name;
+                time_name.setText(temp);
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(DetailActivity.this);
                 layoutManager.setOrientation(OrientationHelper.VERTICAL);
@@ -64,8 +73,11 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         Intent intent = getIntent();
-        url1 = intent.getStringExtra("extra_data");
+        u = intent.getStringExtra("extra_data");
+        url1 = intent.getStringExtra("extra_url");
         sendRequestWithHttpURLConnection();
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -75,7 +87,13 @@ public class DetailActivity extends AppCompatActivity {
                 refreshDetail();
             }
         });
-
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     private void refreshDetail() {
         new Thread(new Runnable() {
@@ -166,5 +184,67 @@ public class DetailActivity extends AppCompatActivity {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.vital, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            //加settings
+            return true;
+        } else if (id == R.id.action_quit) {
+            Toast.makeText(DetailActivity.this, "aaaaaaa", Toast.LENGTH_SHORT).show();
+            ActivityCollector.finishAll();
+            android.os.Process.killProcess(android.os.Process.myPid());
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        if (id == R.id.nav_alter) {
+            // Handle the camera action
+        } else if (id == R.id.nav_hot) {
+            Intent intent = new Intent(DetailActivity.this, VitalActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
+        } else if (id == R.id.nav_sections) {
+            Intent intent = new Intent(DetailActivity.this, MainActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
+        } else if (id == R.id.nav_collection) {
+
+        } else if (id == R.id.nav_like) {
+
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

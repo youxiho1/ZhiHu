@@ -3,25 +3,28 @@ package com.example.youxihouzainali.zhihu;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,43 +39,52 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
-
+public class VitalActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
+    
+    private TextView tv1;
+    private ImageView iv1;
+    String u = null;
     StringBuilder s = new StringBuilder();
-    private List<News> newsList = new ArrayList<>();
-    private String u = null;
+    private List<Hot> hotList = new ArrayList<>();
     private SwipeRefreshLayout swipeRefresh;
-    NewsAdapter adapter = new NewsAdapter(newsList, u);
+    HotAdapter adapter = new HotAdapter(hotList);
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what ==1) {
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(VitalActivity.this);
                 layoutManager.setOrientation(OrientationHelper.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);
-                adapter = new NewsAdapter(newsList, u);
+                adapter = new HotAdapter(hotList);
                 recyclerView.setAdapter(adapter);
             }
         }
     };
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_vital);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         u = intent.getStringExtra("extra_data");
+        //tv1 = (TextView)findViewById(R.id.tv_username);
+        //tv1.setText(u);
+        //iv1 = (ImageView) findViewById(R.id.iv_icon);
+        //iv1设置头像
+        
+        
+        
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshNews();
+                refreshHot();
             }
         });
         sendRequestWithHttpURLConnection();
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    private void refreshNews() {
+    private void refreshHot() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -106,19 +118,18 @@ public class MainActivity extends AppCompatActivity
         }).start();
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initNews(JSONObject jsonObject) {
+    private void initHot(JSONObject jsonObject) {
         try {
-            String description = jsonObject.getString("description");
-            String id = jsonObject.getString("id");
-            String name = jsonObject.getString("name");
+            String title = jsonObject.getString("title");
+            String news_id = jsonObject.getString("news_id");
+            String url = jsonObject.getString("url");
             String thumbnail = jsonObject.getString("thumbnail");
-            News n = new News(id, thumbnail, name, description);
-            newsList.add(n);
+            Hot h = new Hot(news_id, url, thumbnail, title);
+            hotList.add(h);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
     private void sendRequestWithHttpURLConnection() {
         new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -127,7 +138,7 @@ public class MainActivity extends AppCompatActivity
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 try {
-                    URL url = new URL("http://news-at.zhihu.com/api/3/sections");
+                    URL url = new URL("https://news-at.zhihu.com/api/3/news/hot");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
@@ -159,18 +170,18 @@ public class MainActivity extends AppCompatActivity
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void parseJSON(String jsonData) {
-            try {
-                JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("data");
-                for(int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    initNews(jsonObject);
-                }
-                Message msg=new Message() ;
-                msg.what=1;
-                handler.sendMessage(msg) ;
-             }catch (Exception e) {
-                e.printStackTrace();
+        try {
+            JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("recent");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                initHot(jsonObject);
             }
+            Message msg=new Message() ;
+            msg.what=1;
+            handler.sendMessage(msg) ;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void onBackPressed() {
@@ -201,7 +212,7 @@ public class MainActivity extends AppCompatActivity
             //加settings
             return true;
         } else if (id == R.id.action_quit) {
-            Toast.makeText(MainActivity.this, "aaaaaaa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(VitalActivity.this, "aaaaaaa", Toast.LENGTH_SHORT).show();
             ActivityCollector.finishAll();
             android.os.Process.killProcess(android.os.Process.myPid());
             return true;
@@ -218,11 +229,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_alter) {
             // Handle the camera action
         } else if (id == R.id.nav_hot) {
-            Intent intent = new Intent(MainActivity.this, VitalActivity.class);
+            Toast.makeText(VitalActivity.this, "您当前已在热门消息页", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_sections) {
+            Intent intent = new Intent(VitalActivity.this, MainActivity.class);
             intent.putExtra("extra_data", u);
             startActivity(intent);
-        } else if (id == R.id.nav_sections) {
-            Toast.makeText(MainActivity.this, "您当前已在栏目总览页", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_collection) {
 
         } else if (id == R.id.nav_like) {

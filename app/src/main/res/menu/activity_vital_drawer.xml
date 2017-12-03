@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item
+        android:id="@+id/nav_alter"
+        android:icon="@drawable/ic_menu_share"
+        android:title="修改资料" />
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_hot"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="热门消息" />
+        <item
+            android:id="@+id/nav_sections"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="栏目总览" />
+
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_collection"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="我的收藏" />
+        <item
+            android:id="@+id/nav_like"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="我的喜欢" />
+
+    </group>
+
+</menu>

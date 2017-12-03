@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
+    private Button mHelp;
+    private Button mBack;
     public void alert(String title, String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(RegisterActivity.this);
         dialog.setTitle(title);
@@ -39,6 +42,26 @@ public class RegisterActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         if(actionbar != null)
             actionbar.hide();
+        mBack = (Button) findViewById(R.id.back);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        mHelp = (Button) findViewById(R.id.help) ;
+        mHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "1、帮助\n2、帮助\n3、blablabla", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("知道了", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }).show();
+            }
+        });
         Button buttonRegister = (Button) findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                 password = edittext_pass.getText().toString();
                 repassword = edittext_repass.getText().toString();
                 telephone = edittext_tel.getText().toString();
+                if (username.length() == 0 || password.length() == 0 || telephone.length() == 0) {
+                    alert("提示", "您的信息未填写完整");
+                    return;
+                }
                 if (username.length() > 18) {
                     alert("提示", "用户名长度不能超过18位");
                     return;
@@ -89,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                     alert("警告", "您输入的密码属于弱口令，出于安全性考虑，请换用更复杂的密码");
                     return;
                 }
-                if(password.length() <= 6) {
+                if(password.length() < 6) {
                     alert("警告", "为了您的安全考虑，密码长度不能少于6位");
                     return;
                 }
@@ -108,10 +135,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 if (password.equals(repassword)) {
                     int id = -1;
-                    if (username.length() == 0 || password.length() == 0 || telephone.length() == 0) {
-                        alert("提示", "您的信息未填写完整");
-                        return;
-                    }
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
                     Cursor cursor = db.query("User", null, "username=?", new String[] {username}, null, null, null, null);
                     if (cursor.moveToFirst()) {
@@ -132,7 +155,10 @@ public class RegisterActivity extends AppCompatActivity {
                     db.insert("User", null, values);    //插入第一条数据
                     values.clear();
                     Toast.makeText(RegisterActivity.this, "successful", Toast.LENGTH_SHORT).show();
-
+                    Intent intent = new Intent(RegisterActivity.this, VitalActivity.class);
+                    //Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    intent.putExtra("extra_data", username);
+                    startActivity(intent);
                 }
             }
         });

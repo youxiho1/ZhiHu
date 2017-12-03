@@ -22,6 +22,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     private List<News> mNewsList;
     private Context mContext;
+    private String u = null;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View newsView;
@@ -38,8 +39,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(List<News> newsList) {
+    public NewsAdapter(List<News> newsList, String username) {
         mNewsList = newsList;
+        u = username;
     }
 
     @Override
@@ -54,7 +56,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                 int position = holder.getAdapterPosition();
                 News news = mNewsList.get(position);
                 Intent intent = new Intent(mContext, DetailActivity.class);
-                intent.putExtra("extra_data", "http://news-at.zhihu.com/api/3/section/"+news.getId());
+                intent.putExtra("extra_url", "http://news-at.zhihu.com/api/3/section/"+news.getId());
+                intent.putExtra("extra_data", u);
                 mContext.startActivity(intent);
             }
         });

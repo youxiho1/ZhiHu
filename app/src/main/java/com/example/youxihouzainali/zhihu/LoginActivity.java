@@ -3,6 +3,7 @@ package com.example.youxihouzainali.zhihu;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,8 @@ public class LoginActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private EditText mEditTextName;
     private EditText mEditTextPassword;
+    private Button mHelp;
+    private Button mBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +32,26 @@ public class LoginActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         if(actionbar != null)
             actionbar.hide();
+        mBack = (Button) findViewById(R.id.back);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        mHelp = (Button) findViewById(R.id.help) ;
+        mHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "1、帮助\n2、帮助\n3、blablabla", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("知道了", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }).show();
+            }
+        });
         mEditTextName = (EditText) findViewById(R.id.edit_text1);
         mEditTextPassword = (EditText) findViewById(R.id.edit_text2);
         ImageButton button_eye = (ImageButton) findViewById(R.id.button_eye);
@@ -81,6 +104,10 @@ public class LoginActivity extends AppCompatActivity {
                 cursor.close();
                 if(password.equals(rightPassword)) {
                     Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, VitalActivity.class);
+                    //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("extra_data", username);
+                    startActivity(intent);
                 }
                 else
                     Toast.makeText(LoginActivity.this, "密码错误，请重新输入", Toast.LENGTH_SHORT).show();
