@@ -3,6 +3,7 @@
     package="com.example.youxihouzainali.zhihu">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,16 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-            android:label="栏目总览"/>
+        <activity
+            android:name=".MainActivity"
+            android:label="栏目总览" />
         <activity android:name=".EnterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity"
-            android:label="栏目详情"/>
+        <activity
+            android:name=".DetailActivity"
+            android:label="栏目详情" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity
@@ -29,7 +33,12 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".AlterActivity" />
-        <activity android:name=".HotDetailActivity"></activity>
+        <activity android:name=".HotDetailActivity"
+            android:label="新闻详情查看"/>
+        <activity android:name=".ReviewActivity"
+            android:label="长评论查看"/>
+        <activity android:name=".ShortReviewActivity"
+            android:label="短评论查看"/>
     </application>
 
 </manifest>

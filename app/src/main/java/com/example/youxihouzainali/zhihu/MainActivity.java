@@ -2,6 +2,8 @@ package com.example.youxihouzainali.zhihu;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -20,8 +22,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,9 +47,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     StringBuilder s = new StringBuilder();
+    private MyDatabaseHelper dbHelper;
     private List<News> newsList = new ArrayList<>();
     private String u = null;
     private SwipeRefreshLayout swipeRefresh;
+    private TextView tv1;
+    private ImageView iv1;
     NewsAdapter adapter = new NewsAdapter(newsList, u);
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -83,6 +93,22 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerview = navigationView.getHeaderView(0) ;
+        tv1 = (TextView) headerview .findViewById(R.id.tv_username) ;
+        tv1.setText(u);
+        iv1 = (ImageView) headerview.findViewById(R.id.iv_icon);
+        String image = null;
+        dbHelper = new MyDatabaseHelper(this, "Zhihu.db", null, 1);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("User", null, "username=?", new String[] {u}, null, null, null);
+        if(cursor.moveToFirst()) {
+            do {
+                image = cursor.getString(cursor.getColumnIndex("icon"));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        if(image != null)
+            Glide.with(this).load(image).into(iv1);
     }
     private void refreshNews() {
         new Thread(new Runnable() {
@@ -97,6 +123,7 @@ public class MainActivity extends AppCompatActivity
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void run() {
+                        newsList.clear();
                         sendRequestWithHttpURLConnection();
                         adapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
@@ -216,7 +243,10 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_alter) {
-            // Handle the camera action
+            Intent intent = new Intent(MainActivity.this, AlterActivity.class);
+            intent.putExtra("extra_data", u);
+            intent.putExtra("status", 1);
+            startActivity(intent);
         } else if (id == R.id.nav_hot) {
             Intent intent = new Intent(MainActivity.this, VitalActivity.class);
             intent.putExtra("extra_data", u);

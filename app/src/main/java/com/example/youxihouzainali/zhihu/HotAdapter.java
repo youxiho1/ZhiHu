@@ -22,6 +22,7 @@ import java.util.List;
 public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
     private List<Hot> mHotList;
     private Context mContext;
+    private String Username = null;
     
     static class ViewHolder extends RecyclerView.ViewHolder {
         View hotView;
@@ -36,8 +37,9 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
         }
     }
     
-    public HotAdapter(List<Hot> hotList) {
+    public HotAdapter(List<Hot> hotList, String username) {
         mHotList = hotList;
+        Username = username;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,7 +53,8 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
                 int position = holder.getAdapterPosition();
                 Hot hot = mHotList.get(position);
                 Intent intent = new Intent(mContext, HotDetailActivity.class);
-                intent.putExtra("extra_data", "https://hot-at.zhihu.com/api/4/hot/"+hot.getNews_id());
+                intent.putExtra("extra_data", Username);
+                intent.putExtra("extra_url", "https://news-at.zhihu.com/api/4/news/"+hot.getNews_id());
                 mContext.startActivity(intent);
             }
         });

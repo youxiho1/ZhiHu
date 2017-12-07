@@ -13,7 +13,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
             + "id integer primary key autoincrement, "
             + "username text, "
             + "password text, "
-            + "telnumber text)";
+            + "telnumber text, "
+            + "icon text)";
 
     private Context mContext;
 

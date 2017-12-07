@@ -86,6 +86,10 @@ public class RegisterActivity extends AppCompatActivity {
                 char[] c = new char[20];
                 c = username.toCharArray();
                 int length = username.length();
+                if(c[0] >= 48 && c[0] <= 57) {
+                    alert("提示", "用户名首位不能是数字");
+                    return;
+                }
                 for (int i = 0; i < length; i++) {
                     if (!((c[i] >= 48 && c[i] <= 57) || (c[i] >= 65 && c[i] <= 90) || (c[i] >= 97 && c[i] <= 122) || c[i] == ' ')) {
                         alert("警告", "用户名中含有非数字、字母、空格的字符，请重新输入");
@@ -147,6 +151,17 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
                     cursor.close();
+                    Cursor cursor1 = db.query("User", null, "telnumber=?", new String[] {telephone}, null, null, null);
+                    if (cursor1.moveToFirst()) {
+                        do {
+                            id = cursor1.getInt(cursor1.getColumnIndex("id"));
+                        } while (cursor1.moveToNext());
+                    }
+                    if(id != -1) {
+                        alert("提示", "该手机号已被注册");
+                        return;
+                    }
+                    cursor1.close();
                     ContentValues values = new ContentValues();
                     //开始组装第一条数据
                     values.put("username", username);

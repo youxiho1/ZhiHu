@@ -1,29 +1,29 @@
 package com.example.youxihouzainali.zhihu;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.OrientationHelper;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,47 +43,61 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VitalActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    
+public class ReviewActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
+
+    private String u = null;
+    private String url  = null;
     private TextView tv1;
     private ImageView iv1;
-    String u = null;
     StringBuilder s = new StringBuilder();
-    private List<Hot> hotList = new ArrayList<>();
+    private List<Review> reviewList = new ArrayList<>();
     private MyDatabaseHelper dbHelper;
     private SwipeRefreshLayout swipeRefresh;
-    HotAdapter adapter = new HotAdapter(hotList, u);
+    ReviewAdapter adapter = new ReviewAdapter(reviewList, u);
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what ==1) {
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(VitalActivity.this);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(ReviewActivity.this);
                 layoutManager.setOrientation(OrientationHelper.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);
-                adapter = new HotAdapter(hotList, u);
+                adapter = new ReviewAdapter(reviewList, u);
                 recyclerView.setAdapter(adapter);
+                if(reviewList.size() == 0) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(ReviewActivity.this);
+                    dialog.setTitle("提示");
+                    dialog.setMessage("哎呀，当前问题还没有长评论呢");
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    dialog.show();
+                }
             }
         }
     };
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vital);
+        setContentView(R.layout.activity_review);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         u = intent.getStringExtra("extra_data");
+        url = intent.getStringExtra("extra_url");
         dbHelper = new MyDatabaseHelper(this, "Zhihu.db", null, 1);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshHot();
+                refreshReview();
             }
         });
         sendRequestWithHttpURLConnection();
@@ -110,7 +124,7 @@ public class VitalActivity extends AppCompatActivity
         if(image != null)
             Glide.with(this).load(image).into(iv1);
     }
-    private void refreshHot() {
+    private void refreshReview() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -123,7 +137,7 @@ public class VitalActivity extends AppCompatActivity
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void run() {
-                        hotList.clear();
+                        reviewList.clear();
                         sendRequestWithHttpURLConnection();
                         adapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
@@ -133,14 +147,16 @@ public class VitalActivity extends AppCompatActivity
         }).start();
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initHot(JSONObject jsonObject) {
+    private void initReview(JSONObject jsonObject) {
         try {
-            String title = jsonObject.getString("title");
-            String news_id = jsonObject.getString("news_id");
-            String url = jsonObject.getString("url");
-            String thumbnail = jsonObject.getString("thumbnail");
-            Hot h = new Hot(news_id, url, thumbnail, title);
-            hotList.add(h);
+            String author = jsonObject.getString("author");
+            String content = jsonObject.getString("content");
+            String avatar = jsonObject.getString("avatar");
+            String time = jsonObject.getString("time");
+            String id = jsonObject.getString("id");
+            String likes = jsonObject.getString("likes");
+            Review h = new Review(author, content, avatar, time, id, likes);
+            reviewList.add(h);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -153,8 +169,9 @@ public class VitalActivity extends AppCompatActivity
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 try {
-                    URL url = new URL("https://news-at.zhihu.com/api/3/news/hot");
-                    connection = (HttpURLConnection) url.openConnection();
+                    //URL url = new URL("https://news-at.zhihu.com/api/3/news/review");
+                    URL url1 = new URL(url);
+                    connection = (HttpURLConnection) url1.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
@@ -186,10 +203,11 @@ public class VitalActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void parseJSON(String jsonData) {
         try {
-            JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("recent");
+            JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("comments");
+
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                initHot(jsonObject);
+                initReview(jsonObject);
             }
             Message msg=new Message() ;
             msg.what=1;
@@ -234,21 +252,23 @@ public class VitalActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_alter) {
-            Intent intent = new Intent(VitalActivity.this, AlterActivity.class);
+            Intent intent = new Intent(ReviewActivity.this, AlterActivity.class);
             intent.putExtra("extra_data", u);
-            intent.putExtra("status", 2);
+            intent.putExtra("extra_url", url);
+            intent.putExtra("status", 4);
             startActivity(intent);
         } else if (id == R.id.nav_hot) {
-            Toast.makeText(VitalActivity.this, "您当前已在热门消息页", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ReviewActivity.this, VitalActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_sections) {
-            Intent intent = new Intent(VitalActivity.this, MainActivity.class);
+            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
             intent.putExtra("extra_data", u);
             startActivity(intent);
         } else if (id == R.id.nav_collection) {
