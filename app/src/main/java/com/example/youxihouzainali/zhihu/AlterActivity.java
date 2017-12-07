@@ -42,6 +42,7 @@ public class AlterActivity extends AppCompatActivity {
     private String username = null;
     private String imagepath = null;
     private String telnumber = null;
+    private String id1 = null;
     private String url = null;
     private int status = 0;
     private ImageView iv1;
@@ -72,6 +73,8 @@ public class AlterActivity extends AppCompatActivity {
         status = intent.getIntExtra("status", 0);
         if(status == 3 || status == 4 || status == 5 || status == 6)
             url = intent.getStringExtra("extra_url");
+        if(status == 6)
+            id1 = intent.getStringExtra("id");
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("User", null, "username=?", new String[]{username}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -189,6 +192,7 @@ public class AlterActivity extends AppCompatActivity {
                         Intent intent5 = new Intent(AlterActivity.this, HotDetailActivity.class);
                         intent5.putExtra("extra_data", username);
                         intent5.putExtra("extra_url", url);
+                        intent5.putExtra("id", id1);
                         startActivity(intent5);
                 }
                 finish();

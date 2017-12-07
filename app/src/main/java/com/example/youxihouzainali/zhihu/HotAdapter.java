@@ -54,7 +54,9 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
                 Hot hot = mHotList.get(position);
                 Intent intent = new Intent(mContext, HotDetailActivity.class);
                 intent.putExtra("extra_data", Username);
+                intent.putExtra("id", hot.getNews_id());
                 intent.putExtra("extra_url", "https://news-at.zhihu.com/api/4/news/"+hot.getNews_id());
+                //intent.putExtra("extra_url", "https://news-at.zhihu.com/api/4/news-extra/"+hot.getNews_id());
                 mContext.startActivity(intent);
             }
         });
