@@ -16,6 +16,24 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
             + "telnumber text, "
             + "icon text)";
 
+    public static final String CREATE_LIKES  = "create table Likes("
+            + "id integer primary key autoincrement, "
+            + "username text, "
+            + "name text, "
+            + "description text, "
+            + "thumbnail text, "
+            + "flag text, "
+            + "url text)";
+
+    public static final String CREATE_COLLECTION  = "create table Collection("
+            + "id integer primary key autoincrement, "
+            + "username text, "
+            + "name text, "
+            + "description text, "
+            + "thumbnail text, "
+            + "flag text, "
+            + "url text)";
+
     private Context mContext;
 
     public MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -26,13 +44,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER);
-
+        db.execSQL(CREATE_LIKES);
+        db.execSQL(CREATE_COLLECTION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists User");
+        db.execSQL("drop table if exists Likes");
+        db.execSQL("drop table if exists Collection");
         onCreate(db);
+
     }
 
 }

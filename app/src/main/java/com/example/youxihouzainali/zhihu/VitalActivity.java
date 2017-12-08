@@ -60,6 +60,7 @@ public class VitalActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             if (msg.what ==1) {
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                ///recyclerView.addItemDecoration();
                 LinearLayoutManager layoutManager = new LinearLayoutManager(VitalActivity.this);
                 layoutManager.setOrientation(OrientationHelper.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);
