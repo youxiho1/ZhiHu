@@ -40,7 +40,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HotDetailActivity extends AppCompatActivity
+public class HotDetailActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private String u = null;
@@ -282,9 +282,13 @@ public class HotDetailActivity extends AppCompatActivity
             intent.putExtra("extra_data", u);
             startActivity(intent);
         } else if (id == R.id.nav_collection) {
-
+            Intent intent = new Intent(HotDetailActivity.this, CollectionActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_like) {
-
+            Intent intent = new Intent(HotDetailActivity.this, LikesActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

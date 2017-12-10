@@ -16,7 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
     private Button mHelp;
     private Button mBack;
@@ -28,7 +28,6 @@ public class RegisterActivity extends AppCompatActivity {
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
             }
         });
         dialog.show();

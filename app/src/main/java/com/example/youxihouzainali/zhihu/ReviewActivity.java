@@ -43,7 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewActivity extends AppCompatActivity
+public class ReviewActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private String u = null;
@@ -204,7 +204,6 @@ public class ReviewActivity extends AppCompatActivity
     private void parseJSON(String jsonData) {
         try {
             JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("comments");
-
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 initReview(jsonObject);
@@ -272,9 +271,13 @@ public class ReviewActivity extends AppCompatActivity
             intent.putExtra("extra_data", u);
             startActivity(intent);
         } else if (id == R.id.nav_collection) {
-
+            Intent intent = new Intent(ReviewActivity.this, CollectionActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_like) {
-
+            Intent intent = new Intent(ReviewActivity.this, LikesActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

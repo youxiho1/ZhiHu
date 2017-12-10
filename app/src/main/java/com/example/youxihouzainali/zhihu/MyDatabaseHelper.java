@@ -23,6 +23,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
             + "description text, "
             + "thumbnail text, "
             + "flag text, "
+            + "newsid text, "
             + "url text)";
 
     public static final String CREATE_COLLECTION  = "create table Collection("
@@ -32,6 +33,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
             + "description text, "
             + "thumbnail text, "
             + "flag text, "
+            + "newsid text, "
             + "url text)";
 
     private Context mContext;

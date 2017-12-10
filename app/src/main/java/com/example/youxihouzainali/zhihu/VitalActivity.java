@@ -43,7 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VitalActivity extends AppCompatActivity
+public class VitalActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     
     private TextView tv1;
@@ -253,9 +253,13 @@ public class VitalActivity extends AppCompatActivity
             intent.putExtra("extra_data", u);
             startActivity(intent);
         } else if (id == R.id.nav_collection) {
-
+            Intent intent = new Intent(VitalActivity.this, CollectionActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_like) {
-
+            Intent intent = new Intent(VitalActivity.this, LikesActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

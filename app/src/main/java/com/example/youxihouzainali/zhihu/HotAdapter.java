@@ -86,6 +86,7 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
                     values.put("thumbnail", hot.getThumbnail());
                     values.put("name", hot.getTitle());
                     values.put("flag", "2");
+                    values.put("newsid", hot.getNews_id());
                     db.insert("Likes", null, values);
                     btn_likes.setText("取消喜欢");
                 }
@@ -109,6 +110,7 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
                     values.put("username", Username);
                     values.put("url", "https://news-at.zhihu.com/api/4/news/" + hot.getNews_id());
                     values.put("thumbnail", hot.getThumbnail());
+                    values.put("newsid", hot.getNews_id());
                     values.put("name", hot.getTitle());
                     values.put("flag", "2");
                     db.insert("Collection", null, values);

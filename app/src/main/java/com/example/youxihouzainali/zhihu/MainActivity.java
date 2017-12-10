@@ -43,7 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     StringBuilder s = new StringBuilder();
@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity
             //加settings
             return true;
         } else if (id == R.id.action_quit) {
-            Toast.makeText(MainActivity.this, "aaaaaaa", Toast.LENGTH_SHORT).show();
             ActivityCollector.finishAll();
             android.os.Process.killProcess(android.os.Process.myPid());
             return true;
@@ -254,9 +253,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_sections) {
             Toast.makeText(MainActivity.this, "您当前已在栏目总览页", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_collection) {
-
+            Intent intent = new Intent(MainActivity.this, CollectionActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_like) {
-
+            Intent intent = new Intent(MainActivity.this, LikesActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

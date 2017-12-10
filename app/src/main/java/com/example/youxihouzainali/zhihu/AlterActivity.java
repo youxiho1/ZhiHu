@@ -34,7 +34,7 @@ import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AlterActivity extends AppCompatActivity {
+public class AlterActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
     public static final int CHOOSE_PHOTO = 2;
     private Button mHelp;
@@ -188,12 +188,24 @@ public class AlterActivity extends AppCompatActivity {
                         intent4.putExtra("extra_data", username);
                         intent4.putExtra("extra_url", url);
                         startActivity(intent4);
+                        break;
                     case 6:
                         Intent intent5 = new Intent(AlterActivity.this, HotDetailActivity.class);
                         intent5.putExtra("extra_data", username);
                         intent5.putExtra("extra_url", url);
                         intent5.putExtra("id", id1);
                         startActivity(intent5);
+                        break;
+                    case 7:
+                        Intent intent6 = new Intent(AlterActivity.this, LikesActivity.class);
+                        intent6.putExtra("extra_data", username);
+                        startActivity(intent6);
+                        break;
+                    case 8:
+                        Intent intent7 = new Intent(AlterActivity.this, CollectionActivity.class);
+                        intent7.putExtra("extra_data", username);
+                        startActivity(intent7);
+                        break;
                 }
                 finish();
             }

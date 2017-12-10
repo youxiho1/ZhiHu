@@ -43,7 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailActivity extends AppCompatActivity
+public class DetailActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     StringBuilder s = new StringBuilder();
@@ -240,7 +240,6 @@ public class DetailActivity extends AppCompatActivity
             //加settings
             return true;
         } else if (id == R.id.action_quit) {
-            Toast.makeText(DetailActivity.this, "aaaaaaa", Toast.LENGTH_SHORT).show();
             ActivityCollector.finishAll();
             android.os.Process.killProcess(android.os.Process.myPid());
             return true;
@@ -269,9 +268,13 @@ public class DetailActivity extends AppCompatActivity
             intent.putExtra("extra_data", u);
             startActivity(intent);
         } else if (id == R.id.nav_collection) {
-
+            Intent intent = new Intent(DetailActivity.this, CollectionActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         } else if (id == R.id.nav_like) {
-
+            Intent intent = new Intent(DetailActivity.this, LikesActivity.class);
+            intent.putExtra("extra_data", u);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

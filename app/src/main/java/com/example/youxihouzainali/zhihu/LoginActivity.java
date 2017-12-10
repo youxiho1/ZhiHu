@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.text.TextWatcher;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
     private EditText mEditTextName;
     private EditText mEditTextPassword;

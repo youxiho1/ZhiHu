@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class EnterActivity extends AppCompatActivity {
+public class EnterActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
 
     @Override
