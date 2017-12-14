@@ -1,6 +1,7 @@
 package com.example.youxihouzainali.zhihu;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,6 +53,11 @@ public class HotDetailActivity extends BaseActivity
     private String long_comments = null;
     private String short_comments = null;
     private String comments = null;
+    private String body = null;
+    private String image_source = null;
+    private String title = null;
+    private String image = null;
+    private String css = null;
     private TextView tv1;
     private ImageView iv1;
     private SwipeRefreshLayout swipeRefresh;
@@ -65,6 +73,10 @@ public class HotDetailActivity extends BaseActivity
                 TextView tv_shortcomments = (TextView) findViewById(R.id.tv_short_comments);
                 TextView tv_comments = (TextView) findViewById(R.id.tv_comments);
                 TextView tv_popularity = (TextView) findViewById(R.id.tv_popularity);
+                TextView tv_imagesource = (TextView) findViewById(R.id.image_source);
+                TextView tv_title = (TextView) findViewById(R.id.title);
+                WebView wv = (WebView) findViewById(R.id.wv);
+                ImageView iv = (ImageView) findViewById(R.id.image);
                 String temp = "评论数:" + comments;
                 tv_comments.setText(temp);
                 temp = "长评数:" + long_comments;
@@ -73,6 +85,16 @@ public class HotDetailActivity extends BaseActivity
                 tv_popularity.setText(temp);
                 temp = "短评数:" + short_comments;
                 tv_shortcomments.setText(temp);
+                tv_title.setText(title);
+                temp = "图片来源:" + image_source;
+                tv_imagesource.setText(temp);
+                Glide.with(HotDetailActivity.this).load(image).into(iv);
+                String html = "<html>"
+                        + "<head>" + "<link rel=\"stylesheet\" type=\"text/css\" href=\""+css+"\"/> " + "</head>"
+                        + "<body>" + body + "</body>" + "</html>";
+                wv.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                wv.getSettings().setJavaScriptEnabled(true);
+                wv.setWebChromeClient(new WebChromeClient());
             }
         }
     };
@@ -116,6 +138,20 @@ public class HotDetailActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+        final Button btn_likes = (Button) findViewById(R.id.likes);
+        btn_likes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        Button btn_collection = (Button) findViewById(R.id.collection);
+        btn_collection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -127,17 +163,17 @@ public class HotDetailActivity extends BaseActivity
         tv1 = (TextView) headerview .findViewById(R.id.tv_username) ;
         tv1.setText(u);
         iv1 = (ImageView) headerview.findViewById(R.id.iv_icon);
-        String image = null;
+        String image1 = null;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("User", null, "username=?", new String[] {u}, null, null, null);
         if(cursor.moveToFirst()) {
             do {
-                image = cursor.getString(cursor.getColumnIndex("icon"));
+                image1 = cursor.getString(cursor.getColumnIndex("icon"));
             } while (cursor.moveToNext());
         }
         cursor.close();
-        if(image != null)
-            Glide.with(this).load(image).into(iv1);
+        if(image1 != null)
+            Glide.with(this).load(image1).into(iv1);
 
     }
     private void refreshHotDetail() {
@@ -163,12 +199,27 @@ public class HotDetailActivity extends BaseActivity
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initHotDetail(JSONObject jsonObject) {
+    private void initHotDetail(JSONObject jsonObject, JSONObject jsonObject1) {
         try {
             popularity = jsonObject.getString("popularity");
             long_comments = jsonObject.getString("long_comments");
             short_comments = jsonObject.getString("short_comments");
             comments = jsonObject.getString("comments");
+            title = jsonObject1.getString("title");
+            image = jsonObject1.getString("image");
+            image_source = jsonObject1.getString("image_source");
+            body = jsonObject1.getString("body");
+            int lengthv = body.length();
+            int flag = 0;
+            for(int i = 0; i < lengthv; i++) {
+                String temp = body.substring(i, i+36);
+                if(temp.equals("<div class=\"img-place-holder\"></div>")) {
+                    body = body.substring(0, i-1) + body.substring(i+37,lengthv);
+                    break;
+                }
+            }
+            JSONArray jsonArray = jsonObject1.getJSONArray("css");
+            css = jsonArray.getString(0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,6 +234,7 @@ public class HotDetailActivity extends BaseActivity
                 BufferedReader reader = null;
                 try {
                     URL url1 = new URL("https://news-at.zhihu.com/api/4/news-extra/"+id1);
+                    URL url2 = new URL("https://news-at.zhihu.com/api/4/news/"+id1);
                     connection = (HttpURLConnection) url1.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
@@ -194,7 +246,19 @@ public class HotDetailActivity extends BaseActivity
                     while((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    parseJSON(response.toString());
+                    connection = (HttpURLConnection) url2.openConnection();
+                    //connection.setRequestMethod("GET");
+                    //connection.setConnectTimeout(8000);
+                    //connection.setReadTimeout(8000);
+                    InputStream in2 = connection.getInputStream();
+                    reader = null;
+                    reader = new BufferedReader(new InputStreamReader(in2));
+                    StringBuilder response2 = new StringBuilder();
+                    String line2;
+                    while((line2 = reader.readLine()) != null) {
+                        response2.append(line2);
+                    }
+                    parseJSON(response.toString(), response2.toString());
                 }catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -214,10 +278,11 @@ public class HotDetailActivity extends BaseActivity
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void parseJSON(String jsonData) {
+    private void parseJSON(String jsonData, String jsonData2) {
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            initHotDetail(jsonObject);
+            JSONObject jsonObject1 = new JSONObject(jsonData2);
+            initHotDetail(jsonObject, jsonObject1);
             Message msg=new Message() ;
             msg.what=1;
             handler.sendMessage(msg) ;

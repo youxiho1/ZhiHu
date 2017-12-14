@@ -42,10 +42,13 @@
         <activity
             android:name=".ShortReviewActivity"
             android:label="短评论查看" />
-        <activity android:name=".LikesActivity"
-            android:label="我喜欢的栏目/文章"/>
-        <activity android:name=".CollectionActivity"
+        <activity
+            android:name=".LikesActivity"
+            android:label="我喜欢的栏目/文章" />
+        <activity
+            android:name=".CollectionActivity"
             android:label="我收藏的栏目/文章" />
+        <activity android:name=".AlterPasswordActivity"></activity>
     </application>
 
 </manifest>

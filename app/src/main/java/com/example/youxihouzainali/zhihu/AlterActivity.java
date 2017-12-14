@@ -114,6 +114,16 @@ public class AlterActivity extends BaseActivity {
             Glide.with(this).load(imagepath).into(iv1);
             Glide.with(this).load(imagepath).into(iv2);
         }
+        Button btn_alterpass = (Button) findViewById(R.id.alter_password);
+        btn_alterpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AlterActivity.this, AlterPasswordActivity.class);
+                intent.putExtra("extra_data", username);
+                intent.putExtra("status", status);
+                startActivity(intent);
+            }
+        });
         Button btn_altertel = (Button) findViewById(R.id.alter_telephone);
         btn_altertel.setOnClickListener(new View.OnClickListener() {
             @Override

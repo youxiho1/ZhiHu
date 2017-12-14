@@ -58,6 +58,9 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
                 .inflate(R.layout.hot_item, parent, false);
         mContext = parent.getContext();
         final HotAdapter.ViewHolder holder = new HotAdapter.ViewHolder(view);
+        int position = holder.getAdapterPosition();
+        holder.setIsRecyclable(false);
+        holder.hotLikes.setTag(position);
         dbHelper = new MyDatabaseHelper(mContext, "Zhihu.db", null, 1);
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         holder.hotView.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +134,7 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Hot hot = mHotList.get(position);
+        holder.setIsRecyclable(false);
         holder.hotTitle.setText(hot.getTitle());
         String image = hot.getThumbnail();
         Glide.with(mContext).load(image).into(holder.hotImage);

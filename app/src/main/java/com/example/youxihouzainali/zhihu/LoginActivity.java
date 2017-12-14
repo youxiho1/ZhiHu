@@ -102,15 +102,21 @@ public class LoginActivity extends BaseActivity {
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
-                if(password.equals(rightPassword)) {
-                    Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, VitalActivity.class);
-                    //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("extra_data", username);
-                    startActivity(intent);
+                if(rightPassword == null) {
+                    Toast.makeText(LoginActivity.this, "用户不存在", Toast.LENGTH_SHORT).show();
                 }
-                else
-                    Toast.makeText(LoginActivity.this, "密码错误，请重新输入", Toast.LENGTH_SHORT).show();
+                else {
+                    if(password.equals(rightPassword)) {
+                        Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, VitalActivity.class);
+                        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("extra_data", username);
+                        startActivity(intent);
+                    }
+                    else
+                        Toast.makeText(LoginActivity.this, "密码错误，请重新输入", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
         });

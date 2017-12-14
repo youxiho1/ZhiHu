@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.provider.Contacts;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         dbHelper = new MyDatabaseHelper(mContext, "Zhihu.db", null, 1);
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final ViewHolder holder = new ViewHolder(view);
+        holder.setIsRecyclable(false);
         holder.newsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +91,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     values.put("description", news.getDescription());
                     values.put("flag", "1");
                     db.insert("Likes", null, values);
-                    btn_likes.setText("取消喜欢");
+                    holder.newsLikes.setText("取消喜欢");
+                    //btn_likes.setText("取消喜欢");
                 }
                 else {
                     int position = holder.getAdapterPosition();
@@ -109,6 +112,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
                     ContentValues values = new ContentValues();
                     int position = holder.getAdapterPosition();
                     News news = mNewsList.get(position);
+
                     values.put("username", u);
                     values.put("url", "https://news-at.zhihu.com/api/3/section/" +news.getId());
                     values.put("thumbnail", news.getThumbnail());
@@ -134,6 +138,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         News news = mNewsList.get(position);
+        holder.setIsRecyclable(false);
         holder.newsName.setText(news.getName());
         holder.newsDescription.setText(news.getDescription());
         String image = news.getThumbnail();
