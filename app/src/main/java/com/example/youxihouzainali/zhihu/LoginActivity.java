@@ -126,6 +126,8 @@ public class LoginActivity extends BaseActivity {
                     Toast.makeText(LoginActivity.this, "用户不存在", Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    MD5Utils md5Utils = new MD5Utils();
+                    password = md5Utils.encode(password);
                     if(password.equals(rightPassword)) {
                         Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, VitalActivity.class);

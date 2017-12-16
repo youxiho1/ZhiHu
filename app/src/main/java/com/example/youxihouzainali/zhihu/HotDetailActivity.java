@@ -138,7 +138,7 @@ public class HotDetailActivity extends BaseActivity
                 startActivity(intent);
             }
         });
-        final Button btn_likes = (Button) findViewById(R.id.likes);
+        /*final Button btn_likes = (Button) findViewById(R.id.likes);
         btn_likes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +151,7 @@ public class HotDetailActivity extends BaseActivity
             public void onClick(View v) {
 
             }
-        });
+        });*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

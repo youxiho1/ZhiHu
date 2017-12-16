@@ -16,11 +16,7 @@
             android:name=".MainActivity"
             android:label="栏目总览" />
         <activity android:name=".EnterActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".DetailActivity"
@@ -48,7 +44,14 @@
         <activity
             android:name=".CollectionActivity"
             android:label="我收藏的栏目/文章" />
-        <activity android:name=".AlterPasswordActivity"></activity>
+        <activity android:name=".AlterPasswordActivity" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

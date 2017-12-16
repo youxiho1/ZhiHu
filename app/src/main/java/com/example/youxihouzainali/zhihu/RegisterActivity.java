@@ -215,6 +215,8 @@ public class RegisterActivity extends BaseActivity {
                     ContentValues values = new ContentValues();
                     //开始组装第一条数据
                     values.put("username", username);
+                    MD5Utils md5Utils = new MD5Utils();
+                    password = md5Utils.encode(password);
                     values.put("password", password);
                     values.put("telnumber", telephone);
                     db.insert("User", null, values);    //插入第一条数据

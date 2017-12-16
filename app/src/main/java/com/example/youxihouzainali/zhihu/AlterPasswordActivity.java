@@ -87,6 +87,8 @@ public class AlterPasswordActivity extends BaseActivity {
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
+                MD5Utils md5Utils = new MD5Utils();
+                oldpass = md5Utils.encode(oldpass);
                 if(oldpass.equals(rightPassword)) {
                     char[] c = new char[20];
                     c = newpass.toCharArray();
@@ -131,6 +133,8 @@ public class AlterPasswordActivity extends BaseActivity {
                     }
                     ContentValues values = new ContentValues();
                     values.put("username", username);
+                    md5Utils = new MD5Utils();
+                    newpass = md5Utils.encode(newpass);
                     values.put("password", newpass);
                     db.update("User", values, "username=?", new String[] {username});    //插入第一条数据
                     values.clear();

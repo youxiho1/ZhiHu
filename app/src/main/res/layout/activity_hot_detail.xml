@@ -86,15 +86,17 @@ tools:openDrawer="start">
                             android:id="@+id/btn_long_comments"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@color/colorNone"
                             android:text="查看长评论"
                             />
                         <Button
                             android:id="@+id/btn_short_comments"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@color/colorNone"
                             android:text="查看短评论"
                             />
-                        <Button
+                        <!--<Button
                             android:id="@+id/likes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -105,7 +107,7 @@ tools:openDrawer="start">
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="收藏"
-                            />
+                            /> -->
                     </LinearLayout>
                     <WebView
                         android:id="@+id/wv"
