@@ -5,21 +5,29 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class RegisterActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
     private Button mHelp;
     private Button mBack;
+    private ImageButton buttonTest;
+    private String s = null;
     public void alert(String title, String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(RegisterActivity.this);
         dialog.setTitle(title);
@@ -38,7 +46,7 @@ public class RegisterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         dbHelper = new MyDatabaseHelper(this, "Zhihu.db", null, 1);
-        ActionBar actionbar = getSupportActionBar();
+        final ActionBar actionbar = getSupportActionBar();
         if(actionbar != null)
             actionbar.hide();
         mBack = (Button) findViewById(R.id.back);
@@ -61,19 +69,62 @@ public class RegisterActivity extends BaseActivity {
                         }).show();
             }
         });
+        CodeUtils codeUtils = new CodeUtils();
+        buttonTest = (ImageButton) findViewById(R.id.button_teltest) ;
+        buttonTest.setImageBitmap(codeUtils.createBitmap());
+        s = codeUtils.getCode();
+        ImageButton button_eye1 = (ImageButton) findViewById(R.id.button_eye1);
+        button_eye1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editText2 = (EditText)findViewById(R.id.edittext_pass);
+                if(editText2.getTransformationMethod() == PasswordTransformationMethod.getInstance())
+                    editText2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                else
+                    editText2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+        });
+        ImageButton button_eye2 = (ImageButton) findViewById(R.id.button_eye2);
+        button_eye2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editText2 = (EditText)findViewById(R.id.edittext_repass);
+                if(editText2.getTransformationMethod() == PasswordTransformationMethod.getInstance())
+                    editText2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                else
+                    editText2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+        });
+        buttonTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CodeUtils codeUtils = new CodeUtils();
+                buttonTest.setImageBitmap(codeUtils.createBitmap());
+                s = codeUtils.getCode();
+            }
+        });
         Button buttonRegister = (Button) findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username, password, repassword, telephone;
+                String username, password, repassword, telephone, test;
                 EditText edittext_username = (EditText) findViewById(R.id.edittext_username);
                 EditText edittext_pass = (EditText) findViewById(R.id.edittext_pass);
                 EditText edittext_repass = (EditText) findViewById(R.id.edittext_repass);
                 EditText edittext_tel = (EditText) findViewById(R.id.edittext_tel);
+                EditText edittext = (EditText) findViewById(R.id.edittext_teltest);
                 username = edittext_username.getText().toString();
                 password = edittext_pass.getText().toString();
                 repassword = edittext_repass.getText().toString();
                 telephone = edittext_tel.getText().toString();
+                test = edittext.getText().toString();
+                if(!(test.equals(s))) {
+                    alert("警告", "验证码错误");
+                    CodeUtils codeUtils = new CodeUtils();
+                    buttonTest.setImageBitmap(codeUtils.createBitmap());
+                    s = codeUtils.getCode();
+                    return;
+                }
                 if (username.length() == 0 || password.length() == 0 || telephone.length() == 0) {
                     alert("提示", "您的信息未填写完整");
                     return;

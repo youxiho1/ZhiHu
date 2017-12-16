@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:hint="会员名"
+            android:hint="请输入用户名或手机号"
             android:maxLines="1"/>
 
         <LinearLayout
@@ -58,8 +58,7 @@
                 />
         </LinearLayout>
 
-
-        <Button
+        <!--<Button
             android:id="@+id/button_forget_password"
             android:background="@color/colorNone"
             android:layout_width="wrap_content"
@@ -67,7 +66,29 @@
             android:layout_weight="1"
             android:text="忘记密码"
             android:gravity="right|center_vertical"
-            android:layout_gravity="right"/>
+            android:layout_gravity="right"/> -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+            <EditText
+                android:id="@+id/edittext_teltest"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:hint="请输入验证码"
+                />
+            <ImageButton
+                android:id="@+id/button_teltest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorNone"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_login"
@@ -78,13 +99,14 @@
             android:text="登录"
             android:textSize="17sp"
             android:layout_gravity="center"
+            android:layout_marginTop="50dp"
             android:textColor="@color/colorWhite"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4">
+        android:layout_weight="3">
 
     </LinearLayout>
 

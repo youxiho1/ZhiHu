@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +46,7 @@ public class AlterActivity extends BaseActivity {
     private String id1 = null;
     private String url = null;
     private int status = 0;
-    private ImageView iv1;
+    //private ImageView iv1;
     private CircleImageView iv2;
     public void alert(String title, String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(AlterActivity.this);
@@ -106,15 +107,15 @@ public class AlterActivity extends BaseActivity {
         });
         TextView tv1 = (TextView) findViewById(R.id.textview_username);
         final TextView tv2 = (TextView) findViewById(R.id.textview_tel);
-        iv1 = (ImageView) findViewById(R.id.imageview);
+        //iv1 = (ImageView) findViewById(R.id.imageview);
         iv2 = (CircleImageView) findViewById(R.id.circleimageview);
         tv1.setText(username);
         tv2.setText(telnumber);
         if (imagepath != null) {
-            Glide.with(this).load(imagepath).into(iv1);
+            //Glide.with(this).load(imagepath).into(iv1);
             Glide.with(this).load(imagepath).into(iv2);
         }
-        Button btn_alterpass = (Button) findViewById(R.id.alter_password);
+        ImageButton btn_alterpass = (ImageButton) findViewById(R.id.alter_password);
         btn_alterpass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +125,7 @@ public class AlterActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-        Button btn_altertel = (Button) findViewById(R.id.alter_telephone);
+        ImageButton btn_altertel = (ImageButton) findViewById(R.id.alter_telephone);
         btn_altertel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,7 +221,7 @@ public class AlterActivity extends BaseActivity {
                 finish();
             }
         });
-        Button btn_altericon = (Button) findViewById(R.id.alter_icon);
+        ImageButton btn_altericon = (ImageButton) findViewById(R.id.alter_icon);
         btn_altericon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -312,7 +313,7 @@ public class AlterActivity extends BaseActivity {
     }
     private void displayImage() {
         if(imagepath != null) {
-            Glide.with(this).load(imagepath).into(iv1);
+            //Glide.with(this).load(imagepath).into(iv1);
             Glide.with(this).load(imagepath).into(iv2);
         }
         else {

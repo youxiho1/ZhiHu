@@ -257,7 +257,7 @@ public class DetailActivity extends BaseActivity
             Intent intent = new Intent(DetailActivity.this, AlterActivity.class);
             intent.putExtra("extra_data", u);
             intent.putExtra("status", 3);
-            intent.putExtra("url", url1);
+            intent.putExtra("extra_url", url1);
             startActivity(intent);
         } else if (id == R.id.nav_hot) {
             Intent intent = new Intent(DetailActivity.this, VitalActivity.class);

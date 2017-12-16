@@ -8,4 +8,5 @@
     <color name="colorBlue1">#0037ff</color>
     <color name="colorBlue2">#005bec</color>
     <color name="colorNone">#00ffffff</color>
+    <color name="colorLine">#731c1c</color>
 </resources>

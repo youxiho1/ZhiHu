@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +25,8 @@ public class LoginActivity extends BaseActivity {
     private MyDatabaseHelper dbHelper;
     private EditText mEditTextName;
     private EditText mEditTextPassword;
+    private String s = null;
+    private ImageButton buttonTest;
     private Button mHelp;
     private Button mBack;
     @Override
@@ -59,22 +64,29 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 EditText editText2 = (EditText)findViewById(R.id.edit_text2);
-                if(editText2.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-                    editText2.setInputType(InputType.TYPE_CLASS_TEXT);
-                    Toast.makeText(LoginActivity.this, "PASSWORD->TEXT", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    editText2.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    Toast.makeText(LoginActivity.this, "TEXT->PASSWORD", Toast.LENGTH_SHORT).show();
-                    //这个setInputType为什么没作用，明明toast都能成功？！！
-                }
+                if(editText2.getTransformationMethod() == PasswordTransformationMethod.getInstance())
+                    editText2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                else
+                    editText2.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
         });
-        Button button_forget_password = (Button) findViewById(R.id.button_forget_password);
+        /*Button button_forget_password = (Button) findViewById(R.id.button_forget_password);
         button_forget_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //加入忘记密码功能
+            }
+        });*/
+        CodeUtils codeUtils = new CodeUtils();
+        buttonTest = (ImageButton) findViewById(R.id.button_teltest) ;
+        buttonTest.setImageBitmap(codeUtils.createBitmap());
+        s = codeUtils.getCode();
+        buttonTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CodeUtils codeUtils = new CodeUtils();
+                buttonTest.setImageBitmap(codeUtils.createBitmap());
+                s = codeUtils.getCode();
             }
         });
         Button button_login = (Button) findViewById(R.id.button_login);
@@ -84,24 +96,32 @@ public class LoginActivity extends BaseActivity {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 EditText editText1 = (EditText) findViewById(R.id.edit_text1);
                 EditText editText2 = (EditText) findViewById(R.id.edit_text2);
-                String username = null, password = null, rightPassword = null;
+                EditText editText3 = (EditText) findViewById(R.id.edittext_teltest);
+                String username = null, password = null, rightPassword = null, test = null;
                 username = editText1.getText().toString();
                 password = editText2.getText().toString();
-                if(username.equals(null)) {
+                test = editText3.getText().toString();
+                if(!(s.equals(test))) {
+                    Toast.makeText(LoginActivity.this, "验证码输入错误", Toast.LENGTH_SHORT).show();
+                    CodeUtils codeUtils = new CodeUtils();
+                    buttonTest.setImageBitmap(codeUtils.createBitmap());
+                    s = codeUtils.getCode();
+                    return;
+                }
+                if(username.equals("")) {
                     Toast.makeText(LoginActivity.this, "您还没有输入用户名！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(password.equals(null)) {
+                if(password.equals("")) {
                     Toast.makeText(LoginActivity.this, "您还没有输入密码！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Cursor cursor = db.query("User", null, "username=?", new String[] {username}, null, null, null, null);
+                Cursor cursor = db.query("User", null, "username=? or telnumber=?", new String[] {username, username}, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
                         rightPassword = cursor.getString(cursor.getColumnIndex("password"));
                     } while (cursor.moveToNext());
                 }
-                cursor.close();
                 if(rightPassword == null) {
                     Toast.makeText(LoginActivity.this, "用户不存在", Toast.LENGTH_SHORT).show();
                 }
@@ -110,6 +130,15 @@ public class LoginActivity extends BaseActivity {
                         Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, VitalActivity.class);
                         //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        char c[] = username.toCharArray();
+                        if(c[0] >= 48 && c[0] <= 57) {
+                            cursor = db.query("User", null, "telnumber=?", new String[] {username}, null, null, null, null);
+                            if (cursor.moveToFirst()) {
+                                do {
+                                    username = cursor.getString(cursor.getColumnIndex("username"));
+                                } while (cursor.moveToNext());
+                            }
+                        }
                         intent.putExtra("extra_data", username);
                         startActivity(intent);
                     }

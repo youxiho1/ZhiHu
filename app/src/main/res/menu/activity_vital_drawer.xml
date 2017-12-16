@@ -4,13 +4,13 @@
     tools:showIn="navigation_view">
     <item
         android:id="@+id/nav_alter"
-        android:icon="@drawable/ic_menu_share"
+        android:icon="@drawable/account"
         android:title="修改资料" />
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_hot"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/hot_fill"
             android:title="热门消息" />
         <item
             android:id="@+id/nav_sections"
@@ -21,11 +21,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_collection"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/favor_fill1"
             android:title="我的收藏" />
         <item
             android:id="@+id/nav_like"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/like_fill1"
             android:title="我的喜欢" />
 
     </group>

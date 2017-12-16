@@ -8,10 +8,9 @@
 
     <Button
         android:id="@+id/back"
-        android:layout_width="40dp"
+        android:layout_width="30dp"
         android:layout_height="40dp"
-        android:layout_margin="5dp"
-        android:background="@drawable/menu1"
+        android:background="@drawable/back"
         android:scaleType="fitCenter"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
